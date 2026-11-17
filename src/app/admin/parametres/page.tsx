@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { Save, Loader2, MessageCircle, Store, Sliders } from 'lucide-react'
 import toast from 'react-hot-toast'

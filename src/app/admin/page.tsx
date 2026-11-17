@@ -13,6 +13,8 @@ import { getProducts, getCategories } from '@/lib/products'
 import { formatPrice } from '@/lib/utils'
 import type { Product, Category } from '@/types'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboardPage() {
   let products: Product[] = []
   let categories: Category[] = []

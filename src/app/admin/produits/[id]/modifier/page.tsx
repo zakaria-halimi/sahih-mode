@@ -24,8 +24,8 @@ export default async function EditProductPage({
   try {
     categories = await getCategories()
 
-    const { data, error } = await supabase
-      .from('products')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from('products') as any)
       .select('*, category:categories(*)')
       .eq('id', id)
       .single()
