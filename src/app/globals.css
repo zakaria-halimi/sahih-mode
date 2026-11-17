@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-black bg-white antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-3 bg-black text-white text-sm font-medium tracking-widest uppercase transition-all duration-200 hover:bg-gray-800 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-8 py-3 border border-black text-black text-sm font-medium tracking-widest uppercase transition-all duration-200 hover:bg-black hover:text-white active:scale-95;
+  }
+
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3 bg-black text-white text-sm font-medium tracking-widest uppercase transition-all duration-200 hover:bg-gray-900 active:scale-95;
+  }
+
+  .input-field {
+    @apply w-full border border-gray-300 px-4 py-3 text-sm text-black placeholder-gray-400 outline-none focus:border-black transition-colors duration-200 bg-white;
+  }
+
+  .product-card-hover {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+
+  .letter-spacing-luxury {
+    letter-spacing: 0.15em;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400;
+}
