@@ -134,25 +134,22 @@ export default function ProductForm({
     }
 
     try {
-      if (isEdit && initialData?.id) {
-        const { error } = await supabase
-          .from('products')
-          // @ts-expect-error Supabase Database type mapping
-          .update(payload)
-          .eq('id', initialData.id)
+      const res = await fetch('/api/admin/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          id: initialData?.id,
+          isEdit,
+        }),
+      })
 
-        if (error) throw error
-        toast.success('Produit modifié avec succès !')
-      } else {
-        const { error } = await supabase
-          .from('products')
-          // @ts-expect-error Supabase Database type mapping
-          .insert([payload])
-
-        if (error) throw error
-        toast.success('Produit créé avec succès !')
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Erreur lors de l’enregistrement')
       }
 
+      toast.success(isEdit ? 'Produit modifié avec succès !' : 'Produit créé avec succès !')
       router.push('/admin/produits')
       router.refresh()
     } catch (err: unknown) {

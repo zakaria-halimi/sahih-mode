@@ -86,25 +86,21 @@ export default function AdminCategoriesPage() {
     }
 
     try {
-      if (editingId) {
-        const { error } = await supabase
-          .from('categories')
-          // @ts-expect-error Supabase Database type
-          .update(payload)
-          .eq('id', editingId)
+      const res = await fetch('/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          id: editingId,
+        }),
+      })
 
-        if (error) throw error
-        toast.success('Catégorie mise à jour !')
-      } else {
-        const { error } = await supabase
-          .from('categories')
-          // @ts-expect-error Supabase Database type
-          .insert([payload])
-
-        if (error) throw error
-        toast.success('Catégorie ajoutée !')
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Erreur lors de l’enregistrement')
       }
 
+      toast.success(editingId ? 'Catégorie mise à jour !' : 'Catégorie ajoutée !')
       cancelEdit()
       fetchCategories()
     } catch (err: unknown) {
@@ -120,17 +116,19 @@ export default function AdminCategoriesPage() {
     if (!categoryToDelete) return
 
     try {
-      const { error } = await supabase
-        .from('categories')
-        .delete()
-        .eq('id', categoryToDelete.id)
-
-      if (error) throw error
+      const res = await fetch(`/api/admin/categories?id=${categoryToDelete.id}`, {
+        method: 'DELETE',
+      })
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Erreur lors de la suppression')
+      }
 
       toast.success('Catégorie supprimée')
       setCategories((prev) => prev.filter((c) => c.id !== categoryToDelete.id))
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erreur de suppression'
+      const errorObj = err as { message?: string }
+      const msg = errorObj?.message || (err instanceof Error ? err.message : 'Erreur de suppression')
       toast.error(`Impossible de supprimer : ${msg}`)
     } finally {
       setCategoryToDelete(null)

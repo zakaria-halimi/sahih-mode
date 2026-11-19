@@ -62,16 +62,15 @@ export default function AdminSettingsPage() {
     ]
 
     try {
-      for (const item of settingsToSave) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await (supabase.from('settings') as any).upsert(
-          {
-            key: item.key,
-            value: item.value,
-          },
-          { onConflict: 'key' }
-        )
-        if (error) throw error
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ settings: settingsToSave }),
+      })
+
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Erreur lors de la sauvegarde')
       }
 
       toast.success('Paramètres enregistrés avec succès !')

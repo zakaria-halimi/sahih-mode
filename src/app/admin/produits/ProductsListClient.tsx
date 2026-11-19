@@ -57,12 +57,13 @@ export default function ProductsListClient({
     setDeleting(true)
 
     try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', productToDelete.id)
-
-      if (error) throw error
+      const res = await fetch(`/api/admin/products?id=${productToDelete.id}`, {
+        method: 'DELETE',
+      })
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Erreur lors de la suppression')
+      }
 
       setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id))
       toast.success(`Le produit "${productToDelete.name}" a été supprimé`)
