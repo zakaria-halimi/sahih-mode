@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   FolderTree,
   Plus,
@@ -19,6 +20,7 @@ import { slugify } from '@/lib/utils'
 import ConfirmDialog from '@/components/admin/ConfirmDialog'
 
 export default function AdminCategoriesPage() {
+  const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -35,13 +37,18 @@ export default function AdminCategoriesPage() {
   const fetchCategories = async () => {
     setLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name')
-
-      if (error) throw error
-      setCategories((data as unknown as Category[]) || [])
+      const res = await fetch('/api/admin/categories')
+      if (res.ok) {
+        const data = await res.json()
+        setCategories(data.categories || [])
+      } else {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('*')
+          .order('name')
+        if (error) throw error
+        setCategories((data as unknown as Category[]) || [])
+      }
     } catch {
       // Supabase pas encore configuré
     } finally {
@@ -103,6 +110,7 @@ export default function AdminCategoriesPage() {
       toast.success(editingId ? 'Catégorie mise à jour !' : 'Catégorie ajoutée !')
       cancelEdit()
       fetchCategories()
+      router.refresh()
     } catch (err: unknown) {
       const errorObj = err as { message?: string }
       const msg = errorObj?.message || (err instanceof Error ? err.message : 'Une erreur est survenue')
@@ -126,6 +134,7 @@ export default function AdminCategoriesPage() {
 
       toast.success('Catégorie supprimée')
       setCategories((prev) => prev.filter((c) => c.id !== categoryToDelete.id))
+      router.refresh()
     } catch (err: unknown) {
       const errorObj = err as { message?: string }
       const msg = errorObj?.message || (err instanceof Error ? err.message : 'Erreur de suppression')

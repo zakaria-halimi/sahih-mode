@@ -5,6 +5,7 @@ import ProductForm from '@/components/admin/ProductForm'
 import type { Product } from '@/types'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata = {
   title: 'Modifier le Vêtement — SAHIH MODE Admin',

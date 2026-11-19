@@ -4,6 +4,7 @@ import type { Product, Category } from '@/types'
 import ShopPageClient from './ShopPageClient'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: 'Boutique — SAHIH MODE',

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   const whatsappNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '212600000000'
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '212781703796'
 
   return (
     <div className="bg-white min-h-screen">

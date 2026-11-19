@@ -3,11 +3,13 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Save, Loader2, MessageCircle, Store, Sliders } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { createClient } from '@/lib/supabase/client'
 
 export default function AdminSettingsPage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -27,12 +29,19 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const { data, error } = await supabase.from('settings').select('*')
-        if (error) throw error
+        const res = await fetch('/api/admin/settings')
+        let data: { key: string; value: string }[] = []
+        if (res.ok) {
+          const json = await res.json()
+          data = json.settings || []
+        } else {
+          const { data: dbData } = await supabase.from('settings').select('*')
+          data = (dbData as { key: string; value: string }[]) || []
+        }
 
-        if (data) {
+        if (data && data.length > 0) {
           data.forEach((item: { key: string; value: string }) => {
-            if (item.key === 'whatsapp_number') setWhatsappNumber(item.value)
+            if (item.key === 'whatsapp_number' || item.key === 'whatsapp_phone') setWhatsappNumber(item.value)
             if (item.key === 'store_name') setStoreName(item.value)
             if (item.key === 'hero_title') setHeroTitle(item.value)
             if (item.key === 'hero_subtitle') setHeroSubtitle(item.value)
@@ -55,6 +64,7 @@ export default function AdminSettingsPage() {
 
     const settingsToSave = [
       { key: 'whatsapp_number', value: whatsappNumber.trim() },
+      { key: 'whatsapp_phone', value: whatsappNumber.trim() },
       { key: 'store_name', value: storeName.trim() },
       { key: 'hero_title', value: heroTitle.trim() },
       { key: 'hero_subtitle', value: heroSubtitle.trim() },
@@ -74,6 +84,7 @@ export default function AdminSettingsPage() {
       }
 
       toast.success('Paramètres enregistrés avec succès !')
+      router.refresh()
     } catch (err: unknown) {
       const errorObj = err as { message?: string }
       const msg = errorObj?.message || (err instanceof Error ? err.message : 'Erreur de sauvegarde')

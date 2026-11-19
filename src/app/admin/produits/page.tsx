@@ -3,6 +3,7 @@ import ProductsListClient from './ProductsListClient'
 import type { Product, Category } from '@/types'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata = {
   title: 'Gestion des Vêtements — SAHIH MODE Admin',

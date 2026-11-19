@@ -15,4 +15,12 @@ export const publicSupabase = createClient<Database>(supabaseUrl, supabaseAnonKe
     persistSession: false,
     autoRefreshToken: false,
   },
+  global: {
+    fetch: (url, options = {}) => {
+      return fetch(url, {
+        ...options,
+        cache: 'no-store',
+      })
+    },
+  },
 })

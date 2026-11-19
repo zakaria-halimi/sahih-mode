@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { publicSupabase } from '@/lib/supabase/public'
 
 export const dynamic = 'force-dynamic'
@@ -24,6 +25,15 @@ export async function POST(req: Request) {
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })
       }
+
+      // Invalider le cache Next.js pour que les modifications apparaissent immédiatement sur le site
+      revalidatePath('/', 'layout')
+      revalidatePath('/')
+      revalidatePath('/boutique')
+      revalidatePath('/boutique', 'layout')
+      revalidatePath('/admin/produits')
+      revalidatePath(`/boutique/${payload.slug}`)
+
       return NextResponse.json({ success: true, action: 'updated' })
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,6 +43,14 @@ export async function POST(req: Request) {
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })
       }
+
+      // Invalider le cache Next.js
+      revalidatePath('/', 'layout')
+      revalidatePath('/')
+      revalidatePath('/boutique')
+      revalidatePath('/boutique', 'layout')
+      revalidatePath('/admin/produits')
+
       return NextResponse.json({ success: true, action: 'created' })
     }
   } catch (err: unknown) {
@@ -58,6 +76,13 @@ export async function DELETE(req: Request) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
+
+    // Invalider le cache pour supprimer immédiatement le produit de l'accueil et boutique
+    revalidatePath('/', 'layout')
+    revalidatePath('/')
+    revalidatePath('/boutique')
+    revalidatePath('/boutique', 'layout')
+    revalidatePath('/admin/produits')
 
     return NextResponse.json({ success: true, action: 'deleted' })
   } catch (err: unknown) {

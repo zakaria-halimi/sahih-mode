@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import {
   Plus,
   Search,
@@ -27,6 +28,7 @@ export default function ProductsListClient({
   initialProducts,
   categories,
 }: ProductsListClientProps) {
+  const router = useRouter()
   const [products, setProducts] = useState<Product[]>(initialProducts)
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -67,6 +69,7 @@ export default function ProductsListClient({
 
       setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id))
       toast.success(`Le produit "${productToDelete.name}" a été supprimé`)
+      router.refresh()
     } catch (err: unknown) {
       const errorObj = err as { message?: string }
       const msg = errorObj?.message || (err instanceof Error ? err.message : 'Erreur de suppression')

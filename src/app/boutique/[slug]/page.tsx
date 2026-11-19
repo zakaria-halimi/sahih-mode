@@ -5,6 +5,7 @@ import ProductDetailClient from './ProductDetailClient'
 import type { Product } from '@/types'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 /* ─── Dynamic metadata ───────────────────────────────────────────────── */
 

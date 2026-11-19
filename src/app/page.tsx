@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import ProductCard from '@/components/ui/ProductCard'
-import { getFeaturedProducts, getCategories, getSetting } from '@/lib/products'
+import { getFeaturedProducts, getProducts, getCategories, getSetting } from '@/lib/products'
 import type { Product, Category } from '@/types'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: 'SAHIH MODE — Mode Luxe & Authentique',
@@ -27,23 +28,33 @@ const FALLBACK_CATEGORIES: { name: string; slug: string; emoji: string }[] = [
 
 export default async function HomePage() {
   let featuredProducts: Product[] = []
+  let allProducts: Product[] = []
   let categories: Category[] = []
-  let whatsappPhone = '212600000000'
+  let whatsappPhone = '212781703796'
   let storeName = 'SAHIH MODE'
 
   try {
-    ;[featuredProducts, categories, whatsappPhone, storeName] =
-      await Promise.all([
-        getFeaturedProducts(),
-        getCategories(),
-        getSetting('whatsapp_phone', '212600000000'),
-        getSetting('store_name', 'SAHIH MODE'),
-      ])
+    const [featured, all, cats, phone1, phone2, name] = await Promise.all([
+      getFeaturedProducts(),
+      getProducts(),
+      getCategories(),
+      getSetting('whatsapp_number', ''),
+      getSetting('whatsapp_phone', ''),
+      getSetting('store_name', 'SAHIH MODE'),
+    ])
+    featuredProducts = featured
+    allProducts = all
+    categories = cats
+    whatsappPhone = phone1 || phone2 || '212781703796'
+    storeName = name || 'SAHIH MODE'
   } catch {
     /* Supabase not configured — render with fallbacks */
   }
 
-  const displayedProducts = featuredProducts.slice(0, 8)
+  // Display featured products first, and if fewer than 8, fill with newest products
+  const featuredIds = new Set(featuredProducts.map((p) => p.id))
+  const additionalProducts = allProducts.filter((p) => !featuredIds.has(p.id))
+  const displayedProducts = [...featuredProducts, ...additionalProducts].slice(0, 8)
 
   return (
     <>
