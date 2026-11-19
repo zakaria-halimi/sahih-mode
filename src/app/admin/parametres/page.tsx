@@ -76,7 +76,8 @@ export default function AdminSettingsPage() {
 
       toast.success('Paramètres enregistrés avec succès !')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erreur de sauvegarde'
+      const errorObj = err as { message?: string }
+      const msg = errorObj?.message || (err instanceof Error ? err.message : 'Erreur de sauvegarde')
       toast.error(`Erreur: ${msg}`)
     } finally {
       setSaving(false)

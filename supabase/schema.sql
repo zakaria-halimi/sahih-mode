@@ -86,19 +86,22 @@ CREATE POLICY "Public can view categories"
   USING (true);
 
 DROP POLICY IF EXISTS "Admins can insert categories" ON categories;
-CREATE POLICY "Admins can insert categories"
+DROP POLICY IF EXISTS "Enable insert for categories" ON categories;
+CREATE POLICY "Enable insert for categories"
   ON categories FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
+  WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admins can update categories" ON categories;
-CREATE POLICY "Admins can update categories"
+DROP POLICY IF EXISTS "Enable update for categories" ON categories;
+CREATE POLICY "Enable update for categories"
   ON categories FOR UPDATE
-  USING (auth.role() = 'authenticated');
+  USING (true);
 
 DROP POLICY IF EXISTS "Admins can delete categories" ON categories;
-CREATE POLICY "Admins can delete categories"
+DROP POLICY IF EXISTS "Enable delete for categories" ON categories;
+CREATE POLICY "Enable delete for categories"
   ON categories FOR DELETE
-  USING (auth.role() = 'authenticated');
+  USING (true);
 
 -- ---------------------
 -- POLICIES: PRODUCTS
@@ -106,22 +109,25 @@ CREATE POLICY "Admins can delete categories"
 DROP POLICY IF EXISTS "Public can view visible products" ON products;
 CREATE POLICY "Public can view visible products"
   ON products FOR SELECT
-  USING (status = 'visible' OR auth.role() = 'authenticated');
+  USING (true);
 
 DROP POLICY IF EXISTS "Admins can insert products" ON products;
-CREATE POLICY "Admins can insert products"
+DROP POLICY IF EXISTS "Enable insert for products" ON products;
+CREATE POLICY "Enable insert for products"
   ON products FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
+  WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admins can update products" ON products;
-CREATE POLICY "Admins can update products"
+DROP POLICY IF EXISTS "Enable update for products" ON products;
+CREATE POLICY "Enable update for products"
   ON products FOR UPDATE
-  USING (auth.role() = 'authenticated');
+  USING (true);
 
 DROP POLICY IF EXISTS "Admins can delete products" ON products;
-CREATE POLICY "Admins can delete products"
+DROP POLICY IF EXISTS "Enable delete for products" ON products;
+CREATE POLICY "Enable delete for products"
   ON products FOR DELETE
-  USING (auth.role() = 'authenticated');
+  USING (true);
 
 -- ---------------------
 -- POLICIES: SETTINGS
@@ -132,14 +138,16 @@ CREATE POLICY "Public can view settings"
   USING (true);
 
 DROP POLICY IF EXISTS "Admins can insert settings" ON settings;
-CREATE POLICY "Admins can insert settings"
+DROP POLICY IF EXISTS "Enable insert for settings" ON settings;
+CREATE POLICY "Enable insert for settings"
   ON settings FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
+  WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admins can update settings" ON settings;
-CREATE POLICY "Admins can update settings"
+DROP POLICY IF EXISTS "Enable update for settings" ON settings;
+CREATE POLICY "Enable update for settings"
   ON settings FOR UPDATE
-  USING (auth.role() = 'authenticated');
+  USING (true);
 
 -- ==============================================================================
 -- INDEXES DE PERFORMANCE
@@ -149,9 +157,3 @@ CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);
 CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
 CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
-
--- ==============================================================================
--- STORAGE (À exécuter dans l'interface Supabase Storage)
--- ==============================================================================
--- 1. Créer un bucket nommé 'product-images'
--- 2. Activer l'accès public ('Public bucket')

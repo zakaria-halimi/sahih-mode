@@ -67,7 +67,8 @@ export default function ProductsListClient({
       setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id))
       toast.success(`Le produit "${productToDelete.name}" a été supprimé`)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erreur de suppression'
+      const errorObj = err as { message?: string }
+      const msg = errorObj?.message || (err instanceof Error ? err.message : 'Erreur de suppression')
       toast.error(`Échec de suppression : ${msg}`)
     } finally {
       setDeleting(false)

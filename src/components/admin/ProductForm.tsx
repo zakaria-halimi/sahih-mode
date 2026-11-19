@@ -156,7 +156,8 @@ export default function ProductForm({
       router.push('/admin/produits')
       router.refresh()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Une erreur est survenue'
+      const errorObj = err as { message?: string }
+      const msg = errorObj?.message || (err instanceof Error ? err.message : 'Une erreur est survenue')
       toast.error(`Erreur: ${msg}`)
     } finally {
       setLoading(false)
